@@ -35,7 +35,7 @@ def generate_pdf(session):
 
     entry_label = ParagraphStyle(
         "EntryLabel", parent=styles["Normal"],
-        fontSize=9, textColor=colors.HexColor("#555555"),
+        fontSize=9, textColor=colors.HexColor("#505050"),
         spaceAfter=2
     )
     entry_value = ParagraphStyle(
@@ -46,7 +46,7 @@ def generate_pdf(session):
     story = []
     story.append(Paragraph("Legal Research Audit Trail", styles["Title"]))
     story.append(Spacer(1, 8))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#cccccc")))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#d0d0d0")))
     story.append(Spacer(1, 14))
 
     story.append(Paragraph(f"<b>Matter:</b> {session['matter_name']}", styles["Normal"]))
@@ -59,7 +59,7 @@ def generate_pdf(session):
     story.append(Spacer(1, 4))
     story.append(Paragraph(f"<b>Exported:</b> {datetime.now().strftime('%Y-%m-%d %H:%M')}", styles["Normal"]))
     story.append(Spacer(1, 20))
-    story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#dddddd")))
+    story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#d8d8d8")))
     story.append(Spacer(1, 20))
 
     story.append(Paragraph(f"Search Log — {len(session['entries'])} entries", styles["Heading2"]))
@@ -96,11 +96,11 @@ st.markdown("""
 
 html, body, [class*="css"] {
     font-family: 'DM Sans', sans-serif;
-    color: #1a1a1a;
+    color: #1c1c1c;
 }
 
 .stApp {
-    background-color: #f7f6f3;
+    background-color: #f4f4f4;
 }
 
 /* ── Landing / description block ── */
@@ -114,21 +114,21 @@ html, body, [class*="css"] {
     font-family: 'DM Serif Display', serif;
     font-size: 2.4rem;
     font-weight: 400;
-    color: #111111;
+    color: #141414;
     margin: 0 0 1rem;
     line-height: 1.2;
 }
 .landing p {
     font-size: 1rem;
     font-weight: 300;
-    color: #555555;
+    color: #505050;
     line-height: 1.7;
     margin: 0 0 0.6rem;
 }
 .landing .divider {
     width: 36px;
     height: 2px;
-    background: #1a1a1a;
+    background: #1c1c1c;
     margin: 1.5rem auto;
 }
 .landing .pills {
@@ -143,17 +143,17 @@ html, body, [class*="css"] {
     font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #555555;
-    border: 1px solid #cccccc;
+    color: #505050;
+    border: 1px solid #d0d0d0;
     padding: 0.25rem 0.75rem;
     border-radius: 100px;
-    background: #ffffff;
+    background: #fafafa;
 }
 
 /* ── Session created confirmation ── */
 .session-created {
-    background: #111111;
-    color: #f7f6f3;
+    background: #141414;
+    color: #f4f4f4;
     border-radius: 4px;
     padding: 2rem 2rem 1.8rem;
     margin: 0 0 2rem;
@@ -167,22 +167,22 @@ html, body, [class*="css"] {
     font-family: 'DM Serif Display', serif;
     font-size: 1.5rem;
     font-weight: 400;
-    color: #f7f6f3;
+    color: #f4f4f4;
     margin: 0 0 0.4rem;
 }
 .session-created .meta {
     font-size: 0.85rem;
-    color: #999999;
+    color: #909090;
     margin: 0;
     line-height: 1.6;
 }
 .session-created .meta strong {
-    color: #dddddd;
+    color: #d8d8d8;
 }
 
 /* ── Session header (active session) ── */
 .session-header {
-    border-bottom: 2px solid #1a1a1a;
+    border-bottom: 2px solid #1c1c1c;
     padding-bottom: 1rem;
     margin-bottom: 2rem;
 }
@@ -190,18 +190,18 @@ html, body, [class*="css"] {
     font-family: 'DM Serif Display', serif;
     font-size: 1.8rem;
     font-weight: 400;
-    color: #111111;
+    color: #141414;
     margin: 0 0 0.3rem;
 }
 .session-header .question {
     font-size: 0.9rem;
-    color: #555555;
+    color: #505050;
     font-style: italic;
     margin: 0 0 0.2rem;
 }
 .session-header .byline {
     font-size: 0.8rem;
-    color: #999999;
+    color: #909090;
     letter-spacing: 0.03em;
 }
 
@@ -211,15 +211,15 @@ html, body, [class*="css"] {
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #999999;
+    color: #909090;
     margin-bottom: 1rem;
     display: block;
 }
 
 /* ── Entry log card ── */
 .entry-card {
-    background: #ffffff;
-    border: 1px solid #e5e5e5;
+    background: #fafafa;
+    border: 1px solid #e8e8e8;
     border-radius: 3px;
     padding: 1rem 1.2rem;
     margin-bottom: 0.6rem;
@@ -229,22 +229,22 @@ html, body, [class*="css"] {
     font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #999999;
+    color: #909090;
     margin-bottom: 0.5rem;
 }
 .entry-card .search-string {
     font-family: 'DM Serif Display', serif;
     font-size: 1rem;
-    color: #111111;
+    color: #141414;
     margin-bottom: 0.3rem;
 }
 .entry-card .entry-meta {
     font-size: 0.83rem;
-    color: #555555;
+    color: #505050;
     line-height: 1.6;
 }
 .entry-card .entry-label {
-    color: #999999;
+    color: #909090;
     font-size: 0.78rem;
     font-weight: 500;
     letter-spacing: 0.04em;
@@ -256,19 +256,19 @@ html, body, [class*="css"] {
 .empty-log {
     text-align: center;
     padding: 2.5rem 1rem;
-    color: #aaaaaa;
+    color: #a0a0a0;
     font-size: 0.9rem;
     font-style: italic;
-    border: 1px dashed #dddddd;
+    border: 1px dashed #d8d8d8;
     border-radius: 3px;
-    background: #ffffff;
+    background: #fafafa;
     margin-top: 1rem;
 }
 
 /* ── Sidebar ── */
 [data-testid="stSidebar"] {
-    background-color: #f0ede8;
-    border-right: 1px solid #e0ddd8;
+    background-color: #f0f0f0;
+    border-right: 1px solid #e0e0e0;
 }
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
@@ -280,29 +280,29 @@ html, body, [class*="css"] {
 /* ── Inputs ── */
 [data-testid="stTextInput"] input,
 [data-testid="stTextArea"] textarea {
-    border: 1px solid #d5d5d5 !important;
+    border: 1px solid #d8d8d8 !important;
     border-radius: 3px !important;
-    background: #ffffff !important;
+    background: #fafafa !important;
     font-family: 'DM Sans', sans-serif !important;
     font-size: 0.92rem !important;
-    color: #1a1a1a !important;
+    color: #1c1c1c !important;
 }
 [data-testid="stTextInput"] input:focus,
 [data-testid="stTextArea"] textarea:focus {
-    border-color: #1a1a1a !important;
+    border-color: #1c1c1c !important;
     box-shadow: none !important;
 }
 [data-testid="stSelectbox"] > div > div {
-    border: 1px solid #d5d5d5 !important;
+    border: 1px solid #d8d8d8 !important;
     border-radius: 3px !important;
-    background: #ffffff !important;
+    background: #fafafa !important;
 }
 
 /* ── Buttons ── */
 [data-testid="stButton"] > button[kind="primary"],
 [data-testid="stButton"] > button {
-    background-color: #111111 !important;
-    color: #f7f6f3 !important;
+    background-color: #141414 !important;
+    color: #f4f4f4 !important;
     border: none !important;
     border-radius: 3px !important;
     font-family: 'DM Sans', sans-serif !important;
@@ -316,18 +316,18 @@ html, body, [class*="css"] {
 }
 [data-testid="stButton"] > button[kind="secondary"] {
     background-color: transparent !important;
-    color: #888888 !important;
-    border: 1px solid #dddddd !important;
+    color: #848484 !important;
+    border: 1px solid #d8d8d8 !important;
 }
 [data-testid="stButton"] > button[kind="secondary"]:hover {
-    border-color: #999999 !important;
-    color: #555555 !important;
+    border-color: #909090 !important;
+    color: #505050 !important;
 }
 
 /* ── Download button ── */
 [data-testid="stDownloadButton"] button {
-    background-color: #111111 !important;
-    color: #f7f6f3 !important;
+    background-color: #141414 !important;
+    color: #f4f4f4 !important;
     border: none !important;
     border-radius: 3px !important;
     font-family: 'DM Sans', sans-serif !important;
@@ -344,16 +344,16 @@ html, body, [class*="css"] {
     font-weight: 500;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #999999;
-    border-bottom: 1px solid #e5e5e5;
+    color: #909090;
+    border-bottom: 1px solid #e8e8e8;
     padding-bottom: 0.5rem;
     margin-bottom: 1.2rem;
 }
 
 /* ── Export block ── */
 .export-block {
-    background: #ffffff;
-    border: 1px solid #e5e5e5;
+    background: #fafafa;
+    border: 1px solid #e8e8e8;
     border-radius: 3px;
     padding: 1.2rem 1.4rem;
     display: flex;
@@ -362,15 +362,15 @@ html, body, [class*="css"] {
 }
 .export-block .export-desc {
     font-size: 0.88rem;
-    color: #555555;
+    color: #505050;
 }
 .export-block .export-desc strong {
-    color: #111111;
+    color: #141414;
     display: block;
     margin-bottom: 0.15rem;
 }
 
-hr { border-color: #e5e5e5; }
+hr { border-color: #e8e8e8; }
 </style>
 """, unsafe_allow_html=True)
 
