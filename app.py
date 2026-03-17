@@ -1,3 +1,8 @@
+"""
+Legal Research Audit Trail
+Run: streamlit run audit_trail.py
+"""
+
 import streamlit as st
 import json
 import os
@@ -10,9 +15,10 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, HRFlowable
 from reportlab.lib import colors
 
 SESSION_FILE = "sessions.json"
-DATABASES = ["Westlaw", "HeinOnline", "Google Scholar", "Lexis+", "Bloomberg Law", "Fastcase", "Other"]
+DATABASES = ["Westlaw", "HeinOnline", "Google Scholar", "Lexis+",
+             "Bloomberg Law", "Fastcase", "Other"]
 
-# ── Session persistence ───────────────────────────────────────────────────────
+# ── Persistence ───────────────────────────────────────────────────────────────
 
 def load_sessions():
     if os.path.exists(SESSION_FILE):
@@ -24,7 +30,7 @@ def save_sessions(sessions):
     with open(SESSION_FILE, "w") as f:
         json.dump(sessions, f, indent=2)
 
-# ── PDF generation ────────────────────────────────────────────────────────────
+# ── PDF ───────────────────────────────────────────────────────────────────────
 
 def generate_pdf(session):
     buffer = io.BytesIO()
@@ -32,397 +38,363 @@ def generate_pdf(session):
                             rightMargin=inch, leftMargin=inch,
                             topMargin=inch, bottomMargin=inch)
     styles = getSampleStyleSheet()
-
-    entry_label = ParagraphStyle(
-        "EntryLabel", parent=styles["Normal"],
-        fontSize=9, textColor=colors.HexColor("#505050"),
-        spaceAfter=2
-    )
-    entry_value = ParagraphStyle(
-        "EntryValue", parent=styles["Normal"],
-        fontSize=10, spaceAfter=6
-    )
-
+    label_style = ParagraphStyle("Label", parent=styles["Normal"],
+                                 fontSize=8, textColor=colors.HexColor("#666666"),
+                                 spaceAfter=2)
+    value_style = ParagraphStyle("Value", parent=styles["Normal"],
+                                 fontSize=10, spaceAfter=8)
     story = []
     story.append(Paragraph("Legal Research Audit Trail", styles["Title"]))
     story.append(Spacer(1, 8))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#d0d0d0")))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#cccccc")))
     story.append(Spacer(1, 14))
-
-    story.append(Paragraph(f"<b>Matter:</b> {session['matter_name']}", styles["Normal"]))
+    story.append(Paragraph("<b>Matter:</b> " + session["matter_name"], styles["Normal"]))
     story.append(Spacer(1, 4))
-    story.append(Paragraph(f"<b>Research Question:</b> {session['research_question']}", styles["Normal"]))
+    story.append(Paragraph("<b>Research Question:</b> " + session["research_question"], styles["Normal"]))
     story.append(Spacer(1, 4))
-    story.append(Paragraph(f"<b>Researcher:</b> {session['researcher_name']}", styles["Normal"]))
+    story.append(Paragraph("<b>Researcher:</b> " + session["researcher_name"], styles["Normal"]))
     story.append(Spacer(1, 4))
-    story.append(Paragraph(f"<b>Session Started:</b> {session['created']}", styles["Normal"]))
+    story.append(Paragraph("<b>Started:</b> " + session["created"], styles["Normal"]))
     story.append(Spacer(1, 4))
-    story.append(Paragraph(f"<b>Exported:</b> {datetime.now().strftime('%Y-%m-%d %H:%M')}", styles["Normal"]))
+    story.append(Paragraph("<b>Exported:</b> " + datetime.now().strftime("%Y-%m-%d %H:%M"), styles["Normal"]))
     story.append(Spacer(1, 20))
-    story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#d8d8d8")))
-    story.append(Spacer(1, 20))
-
-    story.append(Paragraph(f"Search Log — {len(session['entries'])} entries", styles["Heading2"]))
-    story.append(Spacer(1, 12))
-
-    for i, entry in enumerate(session["entries"], 1):
-        story.append(Paragraph(f"Entry {i} — {entry['timestamp']}", styles["Heading3"]))
-        story.append(Paragraph("Database", entry_label))
-        story.append(Paragraph(entry["database"], entry_value))
-        story.append(Paragraph("Search String", entry_label))
-        story.append(Paragraph(entry["search_string"], entry_value))
-        story.append(Paragraph("Sources Found", entry_label))
-        story.append(Paragraph(entry["sources_found"] or "None noted", entry_value))
-        story.append(Paragraph("Relevance Note", entry_label))
-        story.append(Paragraph(entry["relevance_note"] or "None", entry_value))
-        story.append(Spacer(1, 8))
+    story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#dddddd")))
+    story.append(Spacer(1, 16))
+    story.append(Paragraph("Search Log — " + str(len(session["entries"])) + " entries", styles["Heading2"]))
+    story.append(Spacer(1, 10))
+    for i, e in enumerate(session["entries"], 1):
+        story.append(Paragraph("Entry " + str(i) + " — " + e["timestamp"], styles["Heading3"]))
+        story.append(Paragraph("Database", label_style))
+        story.append(Paragraph(e["database"], value_style))
+        story.append(Paragraph("Search String", label_style))
+        story.append(Paragraph(e["search_string"], value_style))
+        story.append(Paragraph("Sources Found", label_style))
+        story.append(Paragraph(e["sources_found"] or "None noted", value_style))
+        story.append(Paragraph("Relevance Note", label_style))
+        story.append(Paragraph(e["relevance_note"] or "—", value_style))
         story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#eeeeee")))
-        story.append(Spacer(1, 14))
-
+        story.append(Spacer(1, 12))
     doc.build(story)
     buffer.seek(0)
     return buffer
 
 # ── Page config ───────────────────────────────────────────────────────────────
 
-st.set_page_config(page_title="Legal Research Audit Trail", layout="wide",
-                   initial_sidebar_state="expanded")
+st.set_page_config(
+    page_title="Legal Research Audit Trail",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
 # ── Styles ────────────────────────────────────────────────────────────────────
+#
+# Same palette pattern as the attorney lookup app:
+#   #141414  page background
+#   #1d1d1d  sidebar / card background
+#   #252525  card hover / input background
+#   #333333  borders
+#   #4a4a4a  muted borders
+#   #707070  muted text
+#   #b0b0b0  body text
+#   #e8e8e8  primary text
+#   #f5f5f5  headings
 
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap');
 
 html, body, [class*="css"] {
-    font-family: 'DM Sans', sans-serif;
-    color: #ededed;
+    font-family: 'Source Serif 4', Georgia, serif;
+    color: #b0b0b0;
 }
 
-.stApp,
-[data-testid="stAppViewContainer"],
-[data-testid="stAppViewBlockContainer"],
-[data-testid="stMain"],
-[data-testid="stMainBlockContainer"],
-section.main,
-.block-container {
-    background-color: #111111 !important;
-    color: #ededed !important;
+.stApp {
+    background-color: #141414;
 }
 
-/* ── Landing / description block ── */
+/* ── Sidebar ── */
+[data-testid="stSidebar"] {
+    background-color: #1d1d1d;
+    border-right: 1px solid #333333;
+}
+[data-testid="stSidebar"] [data-testid="stTextInput"] input {
+    border: 1px solid #333333 !important;
+    border-radius: 2px;
+    background: #252525 !important;
+    color: #e8e8e8 !important;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.95rem;
+}
+[data-testid="stSidebar"] [data-testid="stTextInput"] input:focus {
+    border-color: #b0b0b0 !important;
+    box-shadow: none !important;
+}
+
+/* ── Inputs (main area) ── */
+[data-testid="stTextInput"] input,
+[data-testid="stTextArea"] textarea {
+    border: 1px solid #333333 !important;
+    border-radius: 2px !important;
+    background: #1d1d1d !important;
+    color: #e8e8e8 !important;
+    font-family: 'Source Serif 4', serif !important;
+    font-size: 0.92rem !important;
+}
+[data-testid="stTextInput"] input:focus,
+[data-testid="stTextArea"] textarea:focus {
+    border-color: #b0b0b0 !important;
+    box-shadow: none !important;
+}
+
+/* ── Selectbox ── */
+[data-testid="stSelectbox"] > div > div {
+    border: 1px solid #333333 !important;
+    border-radius: 2px !important;
+    background: #1d1d1d !important;
+    color: #e8e8e8 !important;
+}
+
+/* ── Buttons ── */
+[data-testid="stButton"] button {
+    background-color: #1d1d1d !important;
+    color: #e8e8e8 !important;
+    border: 1px solid #4a4a4a !important;
+    border-radius: 2px !important;
+    font-family: 'Source Serif 4', serif !important;
+    font-size: 0.88rem !important;
+    letter-spacing: 0.03em !important;
+}
+[data-testid="stButton"] button:hover {
+    border-color: #b0b0b0 !important;
+    background-color: #252525 !important;
+}
+
+/* ── Download button ── */
+[data-testid="stDownloadButton"] button {
+    background-color: #1d1d1d !important;
+    color: #e8e8e8 !important;
+    border: 1px solid #4a4a4a !important;
+    border-radius: 2px !important;
+    font-family: 'Source Serif 4', serif !important;
+    font-size: 0.88rem !important;
+}
+[data-testid="stDownloadButton"] button:hover {
+    border-color: #b0b0b0 !important;
+    background-color: #252525 !important;
+}
+
+/* ── Checkbox ── */
+[data-testid="stCheckbox"] label p {
+    color: #b0b0b0 !important;
+    font-size: 0.88rem !important;
+}
+
+/* ── Alert / info ── */
+[data-testid="stAlert"] {
+    background-color: #1d1d1d !important;
+    border-color: #333333 !important;
+    color: #b0b0b0 !important;
+}
+
+hr { border-color: #333333; }
+
+/* ── Landing ── */
 .landing {
-    max-width: 680px;
-    margin: 3rem auto 3.5rem;
+    max-width: 580px;
+    margin: 4rem auto 3rem;
     text-align: center;
-    padding: 0 1rem;
 }
 .landing h1 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.4rem;
-    font-weight: 400;
-    color: #ededed;
-    margin: 0 0 1rem;
-    line-height: 1.2;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #f5f5f5;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+}
+.landing .rule {
+    width: 36px;
+    height: 1px;
+    background: #4a4a4a;
+    margin: 1.2rem auto;
 }
 .landing p {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    color: #707070;
+    line-height: 1.75;
+    margin-bottom: 0.5rem;
     font-weight: 300;
-    color: #686868;
-    line-height: 1.7;
-    margin: 0 0 0.6rem;
-}
-.landing .divider {
-    width: 36px;
-    height: 2px;
-    background: #ededed;
-    margin: 1.5rem auto;
 }
 .landing .pills {
     display: flex;
     justify-content: center;
     gap: 0.5rem;
     flex-wrap: wrap;
-    margin-top: 1.2rem;
+    margin-top: 1.4rem;
 }
 .landing .pill {
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #686868;
-    border: 1px solid #2a2a2a;
-    padding: 0.25rem 0.75rem;
-    border-radius: 100px;
-    background: #1e1e1e;
-}
-
-/* ── Session created confirmation ── */
-.session-created {
-    background: #161616;
-    color: #ededed;
-    border-radius: 4px;
-    padding: 2rem 2rem 1.8rem;
-    margin: 0 0 2rem;
-    position: relative;
-}
-.session-created .check {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-}
-.session-created h2 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
+    font-size: 0.72rem;
     font-weight: 400;
-    color: #ededed;
-    margin: 0 0 0.4rem;
-}
-.session-created .meta {
-    font-size: 0.85rem;
-    color: #666666;
-    margin: 0;
-    line-height: 1.6;
-}
-.session-created .meta strong {
-    color: #cccccc;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #707070;
+    border: 1px solid #333333;
+    padding: 0.25rem 0.8rem;
+    border-radius: 100px;
 }
 
-/* ── Session header (active session) ── */
-.session-header {
-    border-bottom: 2px solid #ededed;
-    padding-bottom: 1rem;
+/* ── Section label ── */
+.section-label {
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #4a4a4a;
+    border-bottom: 1px solid #333333;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.2rem;
+    margin-top: 0.5rem;
+}
+
+/* ── Session created banner ── */
+.created-banner {
+    background: #1d1d1d;
+    border: 1px solid #333333;
+    border-left: 3px solid #e8e8e8;
+    border-radius: 2px;
+    padding: 1.4rem 1.6rem;
     margin-bottom: 2rem;
 }
-.session-header .matter {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.8rem;
-    font-weight: 400;
-    color: #ededed;
-    margin: 0 0 0.3rem;
-}
-.session-header .question {
-    font-size: 0.9rem;
-    color: #686868;
-    font-style: italic;
-    margin: 0 0 0.2rem;
-}
-.session-header .byline {
-    font-size: 0.8rem;
-    color: #666666;
-    letter-spacing: 0.03em;
-}
-
-/* ── Log entry form ── */
-.form-section-label {
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
+.created-banner .cb-check {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #666666;
-    margin-bottom: 1rem;
-    display: block;
-}
-
-/* ── Entry log card ── */
-.entry-card {
-    background: #1e1e1e;
-    border: 1px solid #2a2a2a;
-    border-radius: 3px;
-    padding: 1rem 1.2rem;
-    margin-bottom: 0.6rem;
-}
-.entry-card .entry-header {
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #666666;
+    color: #707070;
     margin-bottom: 0.5rem;
 }
-.entry-card .search-string {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1rem;
-    color: #ededed;
-    margin-bottom: 0.3rem;
+.created-banner .cb-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #f5f5f5;
+    margin-bottom: 0.4rem;
 }
-.entry-card .entry-meta {
-    font-size: 0.83rem;
-    color: #686868;
+.created-banner .cb-meta {
+    font-size: 0.85rem;
+    color: #707070;
     line-height: 1.6;
 }
-.entry-card .entry-label {
-    color: #666666;
+
+/* ── Session header ── */
+.session-header {
+    padding-bottom: 1.2rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #333333;
+}
+.session-header .sh-matter {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #f5f5f5;
+    margin-bottom: 0.3rem;
+    line-height: 1.2;
+}
+.session-header .sh-question {
+    font-size: 0.9rem;
+    color: #707070;
+    font-style: italic;
+    margin-bottom: 0.2rem;
+}
+.session-header .sh-byline {
     font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.04em;
+    color: #4a4a4a;
+}
+
+/* ── Entry card ── */
+.entry-card {
+    background: #1d1d1d;
+    border: 1px solid #333333;
+    border-left: 3px solid #4a4a4a;
+    border-radius: 2px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.6rem;
+    transition: border-left-color 0.15s ease, background 0.15s ease;
+}
+.entry-card:hover {
+    border-left-color: #e8e8e8;
+    background: #252525;
+}
+.entry-ts {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
+    color: #4a4a4a;
+    margin-bottom: 0.4rem;
+}
+.entry-search {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #f5f5f5;
+    margin-bottom: 0.35rem;
+}
+.entry-meta {
+    font-size: 0.85rem;
+    color: #b0b0b0;
+    line-height: 1.65;
+}
+.entry-label {
+    font-style: italic;
+    color: #707070;
     margin-right: 0.3rem;
 }
 
 /* ── Empty state ── */
-.empty-log {
+.empty-state {
     text-align: center;
     padding: 2.5rem 1rem;
-    color: #686868;
-    font-size: 0.9rem;
-    font-style: italic;
-    border: 1px dashed #2a2a2a;
-    border-radius: 3px;
-    background: #1e1e1e;
-    margin-top: 1rem;
-}
-
-/* ── Sidebar ── */
-[data-testid="stSidebar"] {
-    background-color: #181818;
-    border-right: 1px solid #2a2a2a;
-}
-[data-testid="stSidebar"] h1,
-[data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3 {
-    font-family: 'DM Serif Display', serif !important;
-    font-weight: 400 !important;
-}
-
-/* ── Inputs ── */
-[data-testid="stTextInput"] input,
-[data-testid="stTextArea"] textarea {
-    border: 1px solid #2a2a2a !important;
-    border-radius: 3px !important;
-    background: #1a1a1a !important;
-    font-family: 'DM Sans', sans-serif !important;
-    font-size: 0.92rem !important;
-    color: #ededed !important;
-}
-[data-testid="stTextInput"] input:focus,
-[data-testid="stTextArea"] textarea:focus {
-    border-color: #ededed !important;
-    box-shadow: none !important;
-}
-[data-testid="stSelectbox"] > div > div {
-    border: 1px solid #2a2a2a !important;
-    border-radius: 3px !important;
-    background: #1a1a1a !important;
-}
-
-/* ── Buttons ── */
-[data-testid="stButton"] > button[kind="primary"],
-[data-testid="stButton"] > button {
-    background-color: #ededed !important;
-    color: #ededed !important;
-    border: none !important;
-    border-radius: 3px !important;
-    font-family: 'DM Sans', sans-serif !important;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-    letter-spacing: 0.04em !important;
-    padding: 0.5rem 1.2rem !important;
-}
-[data-testid="stButton"] > button:hover {
-    background-color: #2e2e2e !important;
-}
-[data-testid="stButton"] > button[kind="secondary"] {
-    background-color: transparent !important;
-    color: #909090 !important;
-    border: 1px solid #2a2a2a !important;
-}
-[data-testid="stButton"] > button[kind="secondary"]:hover {
-    border-color: #666666 !important;
-    color: #686868 !important;
-}
-
-/* ── Download button ── */
-[data-testid="stDownloadButton"] button {
-    background-color: #ededed !important;
-    color: #ededed !important;
-    border: none !important;
-    border-radius: 3px !important;
-    font-family: 'DM Sans', sans-serif !important;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-}
-[data-testid="stDownloadButton"] button:hover {
-    background-color: #2e2e2e !important;
-}
-
-/* ── Section heading ── */
-.section-heading {
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #666666;
-    border-bottom: 1px solid #2a2a2a;
-    padding-bottom: 0.5rem;
-    margin-bottom: 1.2rem;
-}
-
-/* ── Export block ── */
-.export-block {
-    background: #1e1e1e;
-    border: 1px solid #2a2a2a;
-    border-radius: 3px;
-    padding: 1.2rem 1.4rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.export-block .export-desc {
+    border: 1px dashed #333333;
+    border-radius: 2px;
+    color: #4a4a4a;
     font-size: 0.88rem;
-    color: #686868;
+    font-style: italic;
+    margin-top: 0.5rem;
 }
-.export-block .export-desc strong {
-    color: #ededed;
-    display: block;
-    margin-bottom: 0.15rem;
-}
-
-hr { border-color: #2a2a2a; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── Data ─────────────────────────────────────────────────────────────────────
+# ── Data ──────────────────────────────────────────────────────────────────────
 
 sessions = load_sessions()
 session_names = list(sessions.keys())
 
-# ── Sidebar: session management ───────────────────────────────────────────────
+# ── Sidebar ───────────────────────────────────────────────────────────────────
 
 with st.sidebar:
     st.markdown("### Sessions")
     st.markdown("---")
-
-    selected = st.selectbox(
-        "Load a session",
-        ["— New session —"] + session_names,
-        label_visibility="visible"
-    )
-
-    if selected != "— New session —" and selected in sessions:
+    selected = st.selectbox("Load a session",
+                            ["— New session —"] + session_names,
+                            label_visibility="visible")
+    if selected != "— New session —":
         st.markdown("---")
-        if st.button("Delete this session", type="secondary"):
+        if st.button("Delete this session", use_container_width=True):
             del sessions[selected]
             save_sessions(sessions)
             st.rerun()
 
-# ── Main area ─────────────────────────────────────────────────────────────────
+# ── New session ───────────────────────────────────────────────────────────────
 
-# New session flow
 if selected == "— New session —":
 
-    # Description block — only shown on the new session screen
     st.markdown("""
     <div class="landing">
         <h1>Legal Research<br>Audit Trail</h1>
-        <div class="divider"></div>
-        <p>
-            A structured log for tracking every search you run during legal research —
-            what you searched, where, what you found, and why it mattered.
-        </p>
-        <p>
-            Each session ties searches to a specific matter or research question,
-            giving you a reproducible record you can export as a formatted PDF memo.
-        </p>
+        <div class="rule"></div>
+        <p>A structured log for every search you run —
+        what you searched, where, what you found, and why it mattered.</p>
+        <p>Each session ties to a matter or research question
+        and exports as a formatted PDF memo.</p>
         <div class="pills">
             <span class="pill">Track search strings</span>
             <span class="pill">Log sources found</span>
@@ -432,14 +404,15 @@ if selected == "— New session —":
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="section-heading">Start a new session</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-label">Start a new session</div>', unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     with col1:
-        matter   = st.text_input("Matter / Case name", placeholder="e.g. Smith v. Jones (2024)")
+        matter     = st.text_input("Matter / Case name",
+                                   placeholder="e.g. Smith v. Jones (2024)")
         researcher = st.text_input("Researcher name", placeholder="Your name")
     with col2:
-        question = st.text_area("Research question", height=108,
+        question = st.text_area("Research question", height=114,
                                 placeholder="e.g. Whether a non-compete clause is enforceable under Ohio law when...")
 
     st.markdown("")
@@ -456,51 +429,53 @@ if selected == "— New session —":
             st.session_state["just_created"] = matter
             st.rerun()
         else:
-            st.warning("Please fill in all three fields before creating a session.")
+            st.warning("Please fill in all three fields.")
 
-# Active session
+# ── Active session ────────────────────────────────────────────────────────────
+
 else:
     session = sessions[selected]
 
-    # ── Session-created confirmation banner ──────────────────────────────────
+    # Created banner — shown once right after creation
     if st.session_state.get("just_created") == selected:
+        q = session["research_question"]
+        q_preview = q[:110] + "…" if len(q) > 110 else q
         st.markdown(
-            '<div class="session-created">'
-            '<div class="check">✓</div>'
-            '<h2>Session created</h2>'
-            '<p class="meta">'
-            '<strong>' + session["matter_name"] + '</strong><br>'
-            + session["research_question"][:120] + ('…' if len(session["research_question"]) > 120 else '') +
-            '<br><br>Researcher: <strong>' + session["researcher_name"] + '</strong> &nbsp;·&nbsp; '
-            'Started: <strong>' + session["created"] + '</strong>'
-            '</p>'
-            '</div>',
+            '<div class="created-banner">'
+            '<div class="cb-check">&#10003; &nbsp;Session created</div>'
+            '<div class="cb-title">' + session["matter_name"] + '</div>'
+            '<div class="cb-meta">'
+            + q_preview + '<br>'
+            + session["researcher_name"] + ' &nbsp;&middot;&nbsp; ' + session["created"] +
+            '</div></div>',
             unsafe_allow_html=True
         )
         del st.session_state["just_created"]
 
-    # ── Session header ───────────────────────────────────────────────────────
+    # Session header
     st.markdown(
         '<div class="session-header">'
-        '<div class="matter">' + session["matter_name"] + '</div>'
-        '<div class="question">' + session["research_question"] + '</div>'
-        '<div class="byline">' + session["researcher_name"] + ' &nbsp;·&nbsp; Started ' + session["created"] + '</div>'
-        '</div>',
+        '<div class="sh-matter">' + session["matter_name"] + '</div>'
+        '<div class="sh-question">' + session["research_question"] + '</div>'
+        '<div class="sh-byline">'
+        + session["researcher_name"] + ' &nbsp;&middot;&nbsp; Started ' + session["created"] +
+        '</div></div>',
         unsafe_allow_html=True
     )
 
-    # ── Log a search ─────────────────────────────────────────────────────────
-    st.markdown('<div class="section-heading">Log a search</div>', unsafe_allow_html=True)
+    # Log a search
+    st.markdown('<div class="section-label">Log a search</div>', unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     with col1:
-        search_string = st.text_input("Search string", placeholder="e.g. \"non-compete\" /s enforceable /p Ohio")
+        search_string = st.text_input("Search string",
+                                      placeholder='e.g. "non-compete" /s enforceable /p Ohio')
         database      = st.selectbox("Database", DATABASES)
     with col2:
         sources_found  = st.text_area("Sources / results noted", height=100,
-                                      placeholder="Case names, citations, anything worth recording...")
+                                      placeholder="Case names, citations, anything worth noting...")
         relevance_note = st.text_area("Relevance note", height=100,
-                                      placeholder="Why kept, why ruled out, what to follow up on...")
+                                      placeholder="Why kept, why ruled out, what to follow up...")
 
     st.markdown("")
     if st.button("Add Entry"):
@@ -510,52 +485,49 @@ else:
                 "search_string":  search_string,
                 "database":       database,
                 "sources_found":  sources_found,
-                "relevance_note": relevance_note
+                "relevance_note": relevance_note,
             })
             save_sessions(sessions)
-            st.toast("Entry logged.", icon="✓")
+            st.toast("Entry logged", icon="✓")
             st.rerun()
         else:
             st.warning("Enter a search string before adding an entry.")
 
-    # ── Running log ──────────────────────────────────────────────────────────
+    # Search log
     st.markdown("")
     n = len(session["entries"])
     label = str(n) + " entr" + ("ies" if n != 1 else "y")
-    st.markdown('<div class="section-heading">Search log &mdash; ' + label + '</div>',
+    st.markdown('<div class="section-label">Search log &mdash; ' + label + '</div>',
                 unsafe_allow_html=True)
 
     if not session["entries"]:
         st.markdown(
-            '<div class="empty-log">No searches logged yet. Add your first entry above.</div>',
+            '<div class="empty-state">No searches logged yet. Add your first entry above.</div>',
             unsafe_allow_html=True
         )
     else:
-        for entry in reversed(session["entries"]):
-            sources_text = entry["sources_found"] or "None noted"
-            relevance_text = entry["relevance_note"] or "—"
+        for e in reversed(session["entries"]):
+            src  = e["sources_found"]  or "None noted"
+            note = e["relevance_note"] or "—"
             st.markdown(
                 '<div class="entry-card">'
-                '<div class="entry-header">' + entry["timestamp"] + ' &nbsp;·&nbsp; ' + entry["database"] + '</div>'
-                '<div class="search-string">' + entry["search_string"] + '</div>'
+                '<div class="entry-ts">' + e["timestamp"] + ' &nbsp;&middot;&nbsp; ' + e["database"] + '</div>'
+                '<div class="entry-search">' + e["search_string"] + '</div>'
                 '<div class="entry-meta">'
-                '<span class="entry-label">Sources</span>' + sources_text + '<br>'
-                '<span class="entry-label">Note</span>' + relevance_text +
-                '</div>'
-                '</div>',
+                '<span class="entry-label">Sources</span>' + src + '<br>'
+                '<span class="entry-label">Note</span>' + note +
+                '</div></div>',
                 unsafe_allow_html=True
             )
 
-        # ── Export ───────────────────────────────────────────────────────────
+        # Export
         st.markdown("")
-        st.markdown('<div class="section-heading">Export</div>', unsafe_allow_html=True)
-
-        pdf_buffer = generate_pdf(session)
-        filename   = session["matter_name"].replace(" ", "_") + "_research_memo.pdf"
-
+        st.markdown('<div class="section-label">Export</div>', unsafe_allow_html=True)
+        pdf = generate_pdf(session)
+        fname = session["matter_name"].replace(" ", "_") + "_research_memo.pdf"
         st.download_button(
-            label="Download Research Memo (PDF)",
-            data=pdf_buffer,
-            file_name=filename,
-            mime="application/pdf"
+            "Download Research Memo (PDF)",
+            data=pdf,
+            file_name=fname,
+            mime="application/pdf",
         )
