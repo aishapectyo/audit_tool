@@ -96,11 +96,11 @@ st.markdown("""
 
 html, body, [class*="css"] {
     font-family: 'DM Sans', sans-serif;
-    color: #1c1c1c;
+    color: #ededed;
 }
 
 .stApp {
-    background-color: #f4f4f4;
+    background-color: #ededed;
 }
 
 /* ── Landing / description block ── */
@@ -114,21 +114,21 @@ html, body, [class*="css"] {
     font-family: 'DM Serif Display', serif;
     font-size: 2.4rem;
     font-weight: 400;
-    color: #141414;
+    color: #ededed;
     margin: 0 0 1rem;
     line-height: 1.2;
 }
 .landing p {
     font-size: 1rem;
     font-weight: 300;
-    color: #505050;
+    color: #686868;
     line-height: 1.7;
     margin: 0 0 0.6rem;
 }
 .landing .divider {
     width: 36px;
     height: 2px;
-    background: #1c1c1c;
+    background: #ededed;
     margin: 1.5rem auto;
 }
 .landing .pills {
@@ -143,17 +143,17 @@ html, body, [class*="css"] {
     font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #505050;
-    border: 1px solid #d0d0d0;
+    color: #686868;
+    border: 1px solid #2a2a2a;
     padding: 0.25rem 0.75rem;
     border-radius: 100px;
-    background: #fafafa;
+    background: #1e1e1e;
 }
 
 /* ── Session created confirmation ── */
 .session-created {
-    background: #141414;
-    color: #f4f4f4;
+    background: #161616;
+    color: #ededed;
     border-radius: 4px;
     padding: 2rem 2rem 1.8rem;
     margin: 0 0 2rem;
@@ -167,22 +167,22 @@ html, body, [class*="css"] {
     font-family: 'DM Serif Display', serif;
     font-size: 1.5rem;
     font-weight: 400;
-    color: #f4f4f4;
+    color: #ededed;
     margin: 0 0 0.4rem;
 }
 .session-created .meta {
     font-size: 0.85rem;
-    color: #909090;
+    color: #666666;
     margin: 0;
     line-height: 1.6;
 }
 .session-created .meta strong {
-    color: #d8d8d8;
+    color: #cccccc;
 }
 
 /* ── Session header (active session) ── */
 .session-header {
-    border-bottom: 2px solid #1c1c1c;
+    border-bottom: 2px solid #ededed;
     padding-bottom: 1rem;
     margin-bottom: 2rem;
 }
@@ -190,18 +190,18 @@ html, body, [class*="css"] {
     font-family: 'DM Serif Display', serif;
     font-size: 1.8rem;
     font-weight: 400;
-    color: #141414;
+    color: #ededed;
     margin: 0 0 0.3rem;
 }
 .session-header .question {
     font-size: 0.9rem;
-    color: #505050;
+    color: #686868;
     font-style: italic;
     margin: 0 0 0.2rem;
 }
 .session-header .byline {
     font-size: 0.8rem;
-    color: #909090;
+    color: #666666;
     letter-spacing: 0.03em;
 }
 
@@ -211,15 +211,15 @@ html, body, [class*="css"] {
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #909090;
+    color: #666666;
     margin-bottom: 1rem;
     display: block;
 }
 
 /* ── Entry log card ── */
 .entry-card {
-    background: #fafafa;
-    border: 1px solid #e8e8e8;
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
     border-radius: 3px;
     padding: 1rem 1.2rem;
     margin-bottom: 0.6rem;
@@ -229,22 +229,22 @@ html, body, [class*="css"] {
     font-weight: 500;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #909090;
+    color: #666666;
     margin-bottom: 0.5rem;
 }
 .entry-card .search-string {
     font-family: 'DM Serif Display', serif;
     font-size: 1rem;
-    color: #141414;
+    color: #ededed;
     margin-bottom: 0.3rem;
 }
 .entry-card .entry-meta {
     font-size: 0.83rem;
-    color: #505050;
+    color: #686868;
     line-height: 1.6;
 }
 .entry-card .entry-label {
-    color: #909090;
+    color: #666666;
     font-size: 0.78rem;
     font-weight: 500;
     letter-spacing: 0.04em;
@@ -256,19 +256,19 @@ html, body, [class*="css"] {
 .empty-log {
     text-align: center;
     padding: 2.5rem 1rem;
-    color: #a0a0a0;
+    color: #686868;
     font-size: 0.9rem;
     font-style: italic;
-    border: 1px dashed #d8d8d8;
+    border: 1px dashed #2a2a2a;
     border-radius: 3px;
-    background: #fafafa;
+    background: #1e1e1e;
     margin-top: 1rem;
 }
 
 /* ── Sidebar ── */
 [data-testid="stSidebar"] {
-    background-color: #f0f0f0;
-    border-right: 1px solid #e0e0e0;
+    background-color: #181818;
+    border-right: 1px solid #2a2a2a;
 }
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
@@ -280,29 +280,29 @@ html, body, [class*="css"] {
 /* ── Inputs ── */
 [data-testid="stTextInput"] input,
 [data-testid="stTextArea"] textarea {
-    border: 1px solid #d8d8d8 !important;
+    border: 1px solid #2a2a2a !important;
     border-radius: 3px !important;
-    background: #fafafa !important;
+    background: #1a1a1a !important;
     font-family: 'DM Sans', sans-serif !important;
     font-size: 0.92rem !important;
-    color: #1c1c1c !important;
+    color: #ededed !important;
 }
 [data-testid="stTextInput"] input:focus,
 [data-testid="stTextArea"] textarea:focus {
-    border-color: #1c1c1c !important;
+    border-color: #ededed !important;
     box-shadow: none !important;
 }
 [data-testid="stSelectbox"] > div > div {
-    border: 1px solid #d8d8d8 !important;
+    border: 1px solid #2a2a2a !important;
     border-radius: 3px !important;
-    background: #fafafa !important;
+    background: #1a1a1a !important;
 }
 
 /* ── Buttons ── */
 [data-testid="stButton"] > button[kind="primary"],
 [data-testid="stButton"] > button {
-    background-color: #141414 !important;
-    color: #f4f4f4 !important;
+    background-color: #ededed !important;
+    color: #ededed !important;
     border: none !important;
     border-radius: 3px !important;
     font-family: 'DM Sans', sans-serif !important;
@@ -312,22 +312,22 @@ html, body, [class*="css"] {
     padding: 0.5rem 1.2rem !important;
 }
 [data-testid="stButton"] > button:hover {
-    background-color: #333333 !important;
+    background-color: #2e2e2e !important;
 }
 [data-testid="stButton"] > button[kind="secondary"] {
     background-color: transparent !important;
-    color: #848484 !important;
-    border: 1px solid #d8d8d8 !important;
+    color: #909090 !important;
+    border: 1px solid #2a2a2a !important;
 }
 [data-testid="stButton"] > button[kind="secondary"]:hover {
-    border-color: #909090 !important;
-    color: #505050 !important;
+    border-color: #666666 !important;
+    color: #686868 !important;
 }
 
 /* ── Download button ── */
 [data-testid="stDownloadButton"] button {
-    background-color: #141414 !important;
-    color: #f4f4f4 !important;
+    background-color: #ededed !important;
+    color: #ededed !important;
     border: none !important;
     border-radius: 3px !important;
     font-family: 'DM Sans', sans-serif !important;
@@ -335,7 +335,7 @@ html, body, [class*="css"] {
     font-weight: 500 !important;
 }
 [data-testid="stDownloadButton"] button:hover {
-    background-color: #333333 !important;
+    background-color: #2e2e2e !important;
 }
 
 /* ── Section heading ── */
@@ -344,16 +344,16 @@ html, body, [class*="css"] {
     font-weight: 500;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #909090;
-    border-bottom: 1px solid #e8e8e8;
+    color: #666666;
+    border-bottom: 1px solid #2a2a2a;
     padding-bottom: 0.5rem;
     margin-bottom: 1.2rem;
 }
 
 /* ── Export block ── */
 .export-block {
-    background: #fafafa;
-    border: 1px solid #e8e8e8;
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
     border-radius: 3px;
     padding: 1.2rem 1.4rem;
     display: flex;
@@ -362,15 +362,15 @@ html, body, [class*="css"] {
 }
 .export-block .export-desc {
     font-size: 0.88rem;
-    color: #505050;
+    color: #686868;
 }
 .export-block .export-desc strong {
-    color: #141414;
+    color: #ededed;
     display: block;
     margin-bottom: 0.15rem;
 }
 
-hr { border-color: #e8e8e8; }
+hr { border-color: #2a2a2a; }
 </style>
 """, unsafe_allow_html=True)
 
