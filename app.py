@@ -99,8 +99,15 @@ html, body, [class*="css"] {
     color: #ededed;
 }
 
-.stApp {
-    background-color: #ededed;
+.stApp,
+[data-testid="stAppViewContainer"],
+[data-testid="stAppViewBlockContainer"],
+[data-testid="stMain"],
+[data-testid="stMainBlockContainer"],
+section.main,
+.block-container {
+    background-color: #111111 !important;
+    color: #ededed !important;
 }
 
 /* ── Landing / description block ── */
