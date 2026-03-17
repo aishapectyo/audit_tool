@@ -488,7 +488,7 @@ else:
                 "relevance_note": relevance_note,
             })
             save_sessions(sessions)
-            st.toast("Entry logged", icon="✓")
+            st.toast("Entry logged ✓")
             st.rerun()
         else:
             st.warning("Enter a search string before adding an entry.")
